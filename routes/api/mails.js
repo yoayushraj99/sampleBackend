@@ -63,68 +63,69 @@
 // module.exports = router;
 
 // routes/api/mail.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 // Load mails model
-const Mail = require('../../models/Mail');
-const SendMail = require('../../controller/sendMail');
+const Mail = require("../../models/Mail");
+const SendMail = require("../../controller/sendMail");
 
 // @route GET api/mails/test
 // @description tests mailss route
 // @access Public
-router.get('/test', (req, res) => res.send('mails route testing!'));
+router.get("/test", (req, res) => res.send("mails route testing!"));
 
 // @route GET api/mails
 // @description Get all mailss
 // @access Public
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   Mail.find()
     .then((mails) => res.json(mails))
-    .catch((err) => res.status(404).json({ noMailsfound: 'No Mails found' }));
+    .catch((err) => res.status(404).json({ noMailsfound: "No Mails found" }));
 });
 
 // @route GET api/mails/:id
 // @description Get single mails by id
 // @access Public
-router.get('/:id', (req, res) => {
+router.get("/:id", (req, res) => {
   Mail.findById(req.params.id)
-    .then((mails) => {
-      SendMail(mails);
-      return res.json(mails);
-    })
-    .catch((err) => res.status(404).json({ nomailsfound: 'No mails found' }));
+    .then((mails) => res.json(mails))
+    .catch((err) => res.status(404).json({ nomailsfound: "No mails found" }));
 });
 
 // @route GET api/mails
 // @description add/save mails
 // @access Public
-router.post('/', (req, res) => {
+router.post("/", (req, res) => {
   Mail.create(req.body)
-    .then((mails) => res.json({ msg: 'mails added successfully' }))
+    .then((mail) => {
+      SendMail(mail);
+      console.log(mail);
+      return res.json("Mail Added SuccessFully");
+    })
     .catch((err) =>
-      res.status(400).json({ error: 'Unable to add this mails' })
+      res.status(400).json({ error: "Unable to add this mails" })
     );
 });
 
 // @route GET api/mails/:id
 // @description Update mails
 // @access Public
-router.put('/:id', (req, res) => {
+router.put("/:id", (req, res) => {
   Mail.findByIdAndUpdate(req.params.id, req.body)
-    .then((mails) => res.json({ msg: 'Updated successfully' }))
+    .then((mails) => res.json({ msg: "Updated successfully" }))
     .catch((err) =>
-      res.status(400).json({ error: 'Unable to update the Database' })
+      res.status(400).json({ error: "Unable to update the Database" })
     );
 });
 
 // @route GET api/mails/:id
 // @description Delete mails by id
 // @access Public
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
   Mail.findByIdAndRemove(req.params.id, req.body)
-    .then((mails) => res.json({ mgs: 'mails entry deleted successfully' }))
-    .catch((err) => res.status(404).json({ error: 'No such a mails' }));
+    .then((mails) => res.json({ mgs: "mails entry deleted successfully" }))
+    .catch((err) => res.status(404).json({ error: "No such a mails" }));
 });
 
 module.exports = router;
